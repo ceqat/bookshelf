@@ -6,14 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LibraryView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var isAddBookViewPresented: Bool = false
-    @State private var books: [Book] = [
-        Book(name: "Мгла", author: "Стивен Кинг", readStatus: .done),
-        Book(name: "Долгая прогулка", author: "Стивен Кинг", readStatus: .reading),
-        Book(name: "Гарри Поттер", author: "Джоан Роулинг", readStatus: .wantToRead, rating: 5)
-    ]
+    @Query private var books: [Book]
     
     var body: some View {
         NavigationStack {
@@ -37,7 +35,7 @@ struct LibraryView: View {
             }
             .sheet(isPresented: $isAddBookViewPresented) {
                 AddBookView { book in
-                    books.append(book)
+                    modelContext.insert(book)
                 }
             }
         }
@@ -46,4 +44,5 @@ struct LibraryView: View {
 
 #Preview {
     LibraryView()
+        .modelContainer(for: Book.self, inMemory: true)
 }

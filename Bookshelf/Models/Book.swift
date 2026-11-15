@@ -6,16 +6,23 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Book: Identifiable, Hashable {
-    let id = UUID()
-    let name: String
-    let author: String
+@Model final class Book {
+    var name: String
+    var author: String
     var readStatus: ReadStatus
     var rating: Int?
+    
+    init(name: String, author: String, readStatus: ReadStatus, rating: Int? = nil) {
+        self.name = name
+        self.author = author
+        self.readStatus = readStatus
+        self.rating = rating
+    }
 }
 
-enum ReadStatus: CaseIterable {
+enum ReadStatus: Codable, CaseIterable {
     case wantToRead
     case reading
     case done
