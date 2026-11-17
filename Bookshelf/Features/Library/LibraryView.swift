@@ -11,13 +11,38 @@ import SwiftData
 struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isAddBookViewPresented: Bool = false
-    @Query private var books: [Book]
+    @Query(sort: \Book.createDate, order: .reverse) private var books: [Book]
+    
+    private func deleteBooks(at offset: IndexSet) {
+        for index in offset {
+            modelContext.delete(books[index])
+        }
+    }
     
     var body: some View {
         NavigationStack {
-            List(books) { book in
-                NavigationLink (value: book) {
-                    BookRowView(book: book)
+            Group {
+                if books.isEmpty {
+                    ContentUnavailableView {
+                        Label("Пока тут пусто", systemImage: "book.badge.plus")
+                    } description: {
+                        Text("Добавьте первую книгу в вашу библиотеку")
+                    } actions: {
+                        Button {
+                            isAddBookViewPresented = true
+                        } label: {
+                            Text("Добавить")
+                        }
+                    }
+                } else {
+                    List {
+                        ForEach(books) { book in
+                            NavigationLink (value: book) {
+                                BookRowView(book: book)
+                            }
+                        }
+                        .onDelete(perform: deleteBooks)
+                    }
                 }
             }
             .navigationTitle("Библиотека")

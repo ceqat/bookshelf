@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BookDetailView: View {
-    var book: Book
+    @Bindable var book: Book
     
     var body: some View {
         VStack (alignment: .leading, spacing: 15) {
@@ -23,34 +23,29 @@ struct BookDetailView: View {
                     .fontWeight(.light)
             }
             
-            VStack (spacing: 15) {
-                HStack (spacing: 3) {
-                    Spacer()
-                    
-                    if let rating = book.rating {
+            VStack (alignment: .leading, spacing: 15) {
+                LabeledContent("Оценка") {
+                    Picker("Оценка", selection: $book.rating) {
+                        Text("Без оценки").tag(nil as Int?)
                         
-                        Text("\(rating)")
-                            .fontWeight(.semibold)
-                        
-                        Image(systemName: "star.fill")
-                            .foregroundStyle(.yellow)
-                    } else {
-                        Text("Нет оценки")
-                            .fontWeight(.semibold)
-                        
-                        Image(systemName: "star.fill")
-                            .foregroundStyle(.gray)
+                        ForEach(1...5, id: \.self) { rating in
+                            Text("\(rating)").tag(rating)
+                        }
                     }
+                    .fixedSize()
+                    
+                    Image(systemName: "star.fill").imageScale(.small)
+                        .foregroundStyle(book.rating == nil ? .gray : .yellow)
                 }
                 
-                HStack {
-                    Spacer()
-                    
-                    Text(book.readStatus.statusName)
-                        .font(.headline)
+                LabeledContent("Статус") {
+                    Picker("Статус", selection: $book.readStatus) {
+                        ForEach(ReadStatus.allCases, id: \.self) { status in
+                            Text(status.statusName).tag(status)
+                        }
+                    }
                 }
             }
-            
             Spacer()
         }
         .padding()

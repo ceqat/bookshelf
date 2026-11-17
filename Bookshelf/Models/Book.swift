@@ -13,12 +13,14 @@ import SwiftData
     var author: String
     var readStatus: ReadStatus
     var rating: Int?
+    var createDate: Date
     
     init(name: String, author: String, readStatus: ReadStatus, rating: Int? = nil) {
         self.name = name
         self.author = author
         self.readStatus = readStatus
         self.rating = rating
+        self.createDate = Date()
     }
 }
 
